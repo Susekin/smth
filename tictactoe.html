@@ -1,0 +1,176 @@
+
+<div class="container">
+    <canvas id="0" class="cell"></canvas>
+    <canvas id="1" class="cell"></canvas>
+    <canvas id="2" class="cell"></canvas>
+    <canvas id="3" class="cell"></canvas>
+    <canvas id="4" class="cell"></canvas>
+    <canvas id="5" class="cell"></canvas>
+    <canvas id="6" class="cell"></canvas>
+    <canvas id="7" class="cell"></canvas>
+    <canvas id="8" class="cell"></canvas>
+</div>
+
+<p style="text-align: center; font-size: 48px;" id="txt">1st player turn</p> <br>
+<p style="text-align: center; font-size: 48px;" id="txt2"></p>
+<p style="text-align: center; font-size: 48px;" id="txt3"></p>
+
+<style>
+
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: 306px;
+    margin: 50px auto;
+}
+.cell {
+
+    font-family: "Permanent Marker", cursive;
+    width: 100px;
+    height: 100px;
+    box-shadow: 0 0 0 1px #333333;
+    border: 1px solid #333333;
+    line-height: 100px;
+    font-size: 60px;
+
+}
+
+p{
+    font-family: Verdana, sans-serif;
+}
+
+
+
+</style>
+
+
+
+
+<script>
+
+
+
+
+const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+
+let turn = true;
+let filled = [];
+let fplayer = [];
+let splayer = [];
+let toggle;
+
+function check(array){
+
+    if (array.length < 3){
+
+        return 0;
+
+    }
+
+    winningConditions.forEach(el => {
+
+        toggle = true;
+
+        el.forEach(el2=>{
+            
+            if (!array.includes(el2)){  
+
+                toggle = false;
+
+            } 
+
+        }
+        );
+
+        
+        
+        if (toggle == true){
+
+            el.forEach(el2=>{
+
+                document.getElementById(el2).style.backgroundColor = 'rgba(101, 254, 0, 0.2)';
+
+            });
+
+            turn = true;
+            filled = [];
+            fplayer = [];
+            splayer = [];
+            
+            document.getElementById("txt").innerHTML = "We have a winner!" ; 
+
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+
+            return 0;
+
+        }
+
+
+        
+    });
+   
+} 
+
+    
+
+      
+
+
+
+document.querySelectorAll('.cell').forEach(function(el) {
+    el.width  = 100;
+    el.height = 100; 
+    el.addEventListener("click",function(){
+
+        if (filled.includes(el.id)){
+            return 0;
+        } else { filled.push(el.id); }
+
+        var ctx = el.getContext("2d");
+
+        if (turn){
+
+            ctx.moveTo(20, 20);
+            ctx.lineTo(80, 80);
+            ctx.stroke();
+
+            ctx.moveTo(20, 80);
+            ctx.lineTo(80, 20);
+            ctx.stroke();  
+
+            turn = false;
+            document.getElementById("txt").innerHTML = "2st player turn" ;
+
+            fplayer.push(parseInt(el.id));
+            
+            check(fplayer);
+
+        } else {
+
+            ctx.beginPath();
+            ctx.arc(50, 50, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+            turn = true;
+            document.getElementById("txt").innerHTML = "1st player turn" ;
+            splayer.push(parseInt(el.id));
+            
+            check(splayer);
+
+        }
+
+    },false);
+});
+
+</script>
